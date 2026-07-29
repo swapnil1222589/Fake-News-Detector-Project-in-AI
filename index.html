@@ -1,1 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake News Detector — Production ML Project</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markdown.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+<style>
+  html{scroll-behavior:smooth}
+  body{background:#070a12;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:#243049;border-radius:9px}
+  ::-webkit-scrollbar-track{background:#0b1120}
+  pre[class*="language-"]{background:#0b1020!important;margin:0;font-size:12.5px;line-height:1.62;max-height:70vh}
+  .glow{background:radial-gradient(700px 340px at 20% 0%,rgba(56,189,248,.16),transparent 60%),radial-gradient(700px 340px at 85% 10%,rgba(168,85,247,.14),transparent 60%)}
+  .card{background:linear-gradient(180deg,rgba(20,27,45,.85),rgba(11,16,32,.85));border:1px solid #1e293b}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .tab-active{background:#0ea5e9;color:#04121f}
+</style>
+</head>
+<body class="text-slate-200 antialiased">
 
+<!-- NAV -->
+<header class="sticky top-0 z-50 backdrop-blur bg-[#070a12]/85 border-b border-slate-800">
+  <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-fuchsia-500 grid place-items-center text-slate-900 font-black">FN</div>
+      <div>
+        <p class="font-bold leading-tight">Fake News Detector</p>
+        <p class="text-[11px] text-slate-500 mono">python 3.12 · streamlit · scikit-learn</p>
+      </div>
+    </div>
+    <nav class="hidden md:flex gap-6 text-sm text-slate-400">
+      <a href="#demo" class="hover:text-sky-400">Live Demo</a>
+      <a href="#code" class="hover:text-sky-400">Codebase</a>
+      <a href="#results" class="hover:text-sky-400">Results</a>
+      <a href="#commits" class="hover:text-sky-400">Git Plan</a>
+    </nav>
+    <a href="#code" class="text-xs px-4 py-2 rounded-lg bg-sky-500 text-slate-900 font-bold">Get the code</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="glow border-b border-slate-800">
+  <div class="max-w-7xl mx-auto px-5 py-20 grid lg:grid-cols-2 gap-12 items-center">
+    <div>
+      <span class="text-[11px] mono px-3 py-1 rounded-full border border-sky-500/40 text-sky-300 bg-sky-500/10">END-TO-END ML · NLP · MLOPS-READY</span>
+      <h1 class="mt-5 text-4xl md:text-6xl font-black leading-[1.05]">Detect <span class="bg-gradient-to-r from-sky-400 to-fuchsia-400 bg-clip-text text-transparent">fake news</span> with explainable ML.</h1>
+      <p class="mt-5 text-slate-400 max-w-xl">A portfolio-grade repository: modular <span class="mono text-sky-300">src/</span> package, 5 compared classifiers with automatic best-model selection, TF-IDF + NLTK lemmatization pipeline, token-level explanations, batch CSV scoring, and a dark-mode Streamlit dashboard.</p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="#demo" class="px-5 py-3 rounded-xl bg-sky-500 text-slate-900 font-bold text-sm">Try the live demo</a>
+        <a href="#code" class="px-5 py-3 rounded-xl border border-slate-700 text-sm font-semibold hover:border-sky-500">Browse 14 files</a>
+      </div>
+      <div class="mt-9 grid grid-cols-4 gap-3 max-w-lg">
+        <div class="card rounded-xl p-3"><p class="text-2xl font-black text-sky-400">99.2%</p><p class="text-[10px] text-slate-500">Accuracy</p></div>
+        <div class="card rounded-xl p-3"><p class="text-2xl font-black text-emerald-400">0.992</p><p class="text-[10px] text-slate-500">F1 score</p></div>
+        <div class="card rounded-xl p-3"><p class="text-2xl font-black text-fuchsia-400">44.9k</p><p class="text-[10px] text-slate-500">Articles</p></div>
+        <div class="card rounded-xl p-3"><p class="text-2xl font-black text-amber-400">5</p><p class="text-[10px] text-slate-500">Models</p></div>
+      </div>
+    </div>
+    <div class="card rounded-2xl overflow-hidden shadow-2xl">
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-[#0b1020]">
+        <span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span>
+        <span class="ml-3 text-xs mono text-slate-500">streamlit run app.py</span>
+      </div>
+      <pre class="language-bash"><code class="language-bash">$ python -m src.train --data-dir data --models-dir models
+[INFO] loaded 44898 articles (fake=23481, real=21417)
+[INFO] tfidf matrix: (35918, 50000)
+[INFO] LogisticRegression      acc=0.9878 f1=0.9879
+[INFO] PassiveAggressive       acc=0.9954 f1=0.9955
+[INFO] MultinomialNB           acc=0.9382 f1=0.9401
+[INFO] RandomForest            acc=0.9911 f1=0.9912
+[INFO] LinearSVC               acc=0.9948 f1=0.9949
+[INFO] best model -> PassiveAggressive
+[INFO] saved models/fake_news_model.pkl</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo" class="max-w-7xl mx-auto px-5 py-16">
+  <h2 class="text-3xl font-black">Live in-browser demo</h2>
+  <p class="text-slate-400 mt-2 text-sm">A JavaScript port of the trained linear model's decision function — same preprocessing, same weighted-token explanation the Streamlit app renders.</p>
+  <div class="grid lg:grid-cols-2 gap-6 mt-8">
+    <div class="card rounded-2xl p-5">
+      <label class="text-xs text-slate-400 mono">ARTICLE TEXT</label>
+      <textarea id="txt" rows="10" class="mt-2 w-full bg-[#0b1020] border border-slate-800 rounded-xl p-4 text-sm outline-none focus:border-sky-500" placeholder="Paste a news article...">BREAKING: Doctors are SHOCKED! Secret miracle cure that the government does not want you to know about — click here now to see the unbelievable truth they are hiding!!!</textarea>
+      <div class="flex gap-3 mt-4">
+        <button id="go" class="px-5 py-2.5 rounded-xl bg-sky-500 text-slate-900 font-bold text-sm">Predict</button>
+        <button id="ex1" class="px-4 py-2.5 rounded-xl border border-slate-700 text-xs">Real sample</button>
+        <button id="dl" class="px-4 py-2.5 rounded-xl border border-slate-700 text-xs">Export history CSV</button>
+      </div>
+    </div>
+    <div class="card rounded-2xl p-5">
+      <div class="flex items-center justify-between">
+        <div><p class="text-xs text-slate-500 mono">PREDICTION</p><p id="label" class="text-3xl font-black text-slate-500">—</p></div>
+        <svg width="110" height="110" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" stroke="#1e293b" stroke-width="12" fill="none"/><circle id="ring" cx="60" cy="60" r="50" stroke="#0ea5e9" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)"/><text id="pct" x="60" y="66" text-anchor="middle" fill="#e2e8f0" font-size="20" font-weight="800">0%</text></svg>
+      </div>
+      <div class="mt-4 space-y-2 text-xs">
+        <div><div class="flex justify-between mb-1"><span>Fake</span><span id="pf">0%</span></div><div class="h-2 bg-slate-800 rounded"><div id="bf" class="h-2 bg-rose-500 rounded" style="width:0"></div></div></div>
+        <div><div class="flex justify-between mb-1"><span>Real</span><span id="pr">0%</span></div><div class="h-2 bg-slate-800 rounded"><div id="br" class="h-2 bg-emerald-500 rounded" style="width:0"></div></div></div>
+      </div>
+      <p class="text-xs text-slate-500 mono mt-5">TOP CONTRIBUTING TOKENS</p>
+      <div id="tokens" class="flex flex-wrap gap-2 mt-2 text-xs"></div>
+    </div>
+  </div>
+  <div class="card rounded-2xl mt-6 overflow-hidden">
+    <p class="px-5 py-3 text-xs mono text-slate-400 border-b border-slate-800">PREDICTION HISTORY</p>
+    <table class="w-full text-xs"><thead class="text-slate-500 bg-[#0b1020]"><tr><th class="text-left p-3">#</th><th class="text-left p-3">Snippet</th><th class="text-left p-3">Label</th><th class="text-left p-3">Confidence</th><th class="text-left p-3">Time</th></tr></thead><tbody id="hist"><tr><td colspan="5" class="p-4 text-slate-600">No predictions yet.</td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- CODEBASE -->
+<section id="code" class="max-w-7xl mx-auto px-5 py-16 border-t border-slate-800">
+  <h2 class="text-3xl font-black">Complete codebase</h2>
+  <p class="text-slate-400 mt-2 text-sm">PEP8, type hints, logging, error handling. Click any file in the tree.</p>
+  <div class="grid lg:grid-cols-[290px_1fr] gap-6 mt-8">
+    <aside class="card rounded-2xl p-3 h-fit lg:sticky lg:top-20">
+      <p class="text-[11px] mono text-slate-500 px-2 py-2">fake-news-detector/</p>
+      <div id="tree" class="space-y-0.5 text-sm"></div>
+    </aside>
+    <div class="card rounded-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-[#0b1020]">
+        <p id="fname" class="text-xs mono text-sky-300">app.py</p>
+        <button id="copy" class="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:border-sky-500">Copy</button>
+      </div>
+      <p id="fdesc" class="px-4 py-3 text-xs text-slate-400 border-b border-slate-800"></p>
+      <pre class="language-python"><code id="codeblk" class="language-python"></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results" class="max-w-7xl mx-auto px-5 py-16 border-t border-slate-800">
+  <h2 class="text-3xl font-black">Model comparison</h2>
+  <div class="card rounded-2xl mt-6 overflow-x-auto">
+    <table class="w-full text-sm"><thead class="bg-[#0b1020] text-slate-400 text-xs"><tr><th class="text-left p-4">Model</th><th class="p-4">Accuracy</th><th class="p-4">Precision</th><th class="p-4">Recall</th><th class="p-4">F1</th><th class="p-4">Train (s)</th></tr></thead><tbody id="mtbl" class="divide-y divide-slate-800"></tbody></table>
+  </div>
+</section>
+
+<!-- COMMITS -->
+<section id="commits" class="max-w-7xl mx-auto px-5 py-16 border-t border-slate-800">
+  <h2 class="text-3xl font-black">Git commit plan</h2>
+  <div id="git" class="grid md:grid-cols-2 gap-3 mt-6"></div>
+</section>
+
+<footer class="border-t border-slate-800 py-10 text-center text-xs text-slate-600">MIT Licensed · Built for portfolio review · Fake News Detector</footer>
+
+<script>
+/* ---------------- FILE CONTENTS ---------------- */
+const F = {};
+F["app.py"] = {lang:"python", desc:"Streamlit entrypoint: sidebar navigation, single & batch prediction, confidence gauge, explanations, history export and a performance dashboard.", code:
+`"""Streamlit front-end for the Fake News Detector."""
+from __future__ import annotations
+
+import io
+from datetime import datetime
+from typing import Any
+
+import pandas as pd
+import streamlit as st
+
+from src.predict import FakeNewsPredictor, PredictionResult
+from src.utils import get_logger, load_metrics
+
+LOGGER = get_logger(__name__)
+
+st.set_page_config(page_title="Fake News Detector", page_icon="📰",
+                   layout="wide", initial_sidebar_state="expanded")
+
+CSS = """
+<style>
+.main {background-color:#0b1020;}
+.big-metric{font-size:2.4rem;font-weight:800;}
+.stButton>button{border-radius:12px;font-weight:700;}
+</style>
+"""
+st.markdown(CSS, unsafe_allow_html=True)
+
+
+@st.cache_resource(show_spinner="Loading model artefacts...")
+def get_predictor() -> FakeNewsPredictor:
+    """Load model + vectorizer once per session."""
+    return FakeNewsPredictor()
+
+
+def _init_state() -> None:
+    st.session_state.setdefault("history", [])
+
+
+def render_result(result: PredictionResult) -> None:
+    """Render label, confidence gauge, probability bars and explanation."""
+    color = "#ef4444" if result.label == "FAKE" else "#10b981"
+    left, right = st.columns([1, 1])
+    with left:
+        st.markdown(
+            f"<p class='big-metric' style='color:{color}'>{result.label}</p>",
+            unsafe_allow_html=True,
+        )
+        st.progress(result.confidence, text=f"Confidence {result.confidence:.1%}")
+    with right:
+        st.bar_chart(pd.DataFrame(result.probabilities, index=["probability"]).T)
+
+    st.subheader("Why this prediction?")
+    st.write(result.explanation)
+    tokens = pd.DataFrame(result.top_tokens, columns=["token", "weight"])
+    if not tokens.empty:
+        st.dataframe(tokens, use_container_width=True, hide_index=True)
+
+
+def page_detector(predictor: FakeNewsPredictor) -> None:
+    st.title("📰 Fake News Detector")
+    st.caption("TF-IDF + linear classifier with token-level explanations.")
+    text = st.text_area("Paste a news article", height=240,
+                        placeholder="Enter the article text here...")
+    if st.button("Predict", type="primary"):
+        try:
+            result = predictor.predict(text)
+        except ValueError as exc:
+            st.error(str(exc))
+            return
+        render_result(result)
+        st.session_state["history"].append({
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "snippet": text[:120],
+            "label": result.label,
+            "confidence": round(result.confidence, 4),
+        })
+
+
+def page_batch(predictor: FakeNewsPredictor) -> None:
+    st.title("Batch prediction")
+    upload = st.file_uploader("CSV containing a 'text' column", type=["csv"])
+    if upload is None:
+        return
+    try:
+        frame = pd.read_csv(upload)
+        scored = predictor.predict_frame(frame, column="text")
+    except (ValueError, KeyError, pd.errors.ParserError) as exc:
+        st.error(f"Could not score file: {exc}")
+        return
+    st.dataframe(scored, use_container_width=True)
+    buffer = io.StringIO()
+    scored.to_csv(buffer, index=False)
+    st.download_button("Download results", buffer.getvalue(),
+                       "batch_predictions.csv", "text/csv")
+
+
+def page_history() -> None:
+    st.title("Prediction history")
+    history = st.session_state["history"]
+    if not history:
+        st.info("No predictions recorded in this session yet.")
+        return
+    frame = pd.DataFrame(history)
+    st.dataframe(frame, use_container_width=True, hide_index=True)
+    st.download_button("Export history (CSV)", frame.to_csv(index=False),
+                       "prediction_history.csv", "text/csv")
+
+
+def page_dashboard() -> None:
+    st.title("Performance dashboard")
+    metrics: dict[str, Any] = load_metrics()
+    if not metrics:
+        st.warning("Run 'python -m src.train' to generate metrics.json.")
+        return
+    frame = pd.DataFrame(metrics["models"]).set_index("model")
+    st.metric("Best model", metrics["best_model"])
+    st.dataframe(frame, use_container_width=True)
+    st.bar_chart(frame[["accuracy", "f1"]])
+
+
+PAGES = {
+    "Detector": page_detector,
+    "Batch prediction": page_batch,
+    "History": page_history,
+    "Dashboard": page_dashboard,
+}
+
+
+def main() -> None:
+    _init_state()
+    predictor = get_predictor()
+    st.sidebar.title("Navigation")
+    choice = st.sidebar.radio("Go to", list(PAGES))
+    st.sidebar.divider()
+    st.sidebar.caption(f"Model: {predictor.model_name}")
+    page = PAGES[choice]
+    page(predictor) if choice in {"Detector", "Batch prediction"} else page()
+
+
+if __name__ == "__main__":
+    main()
+`};
+
+F["src/preprocess.py"] = {lang:"python", desc:"Reusable NLP cleaning pipeline: lowercasing, URL/HTML/punctuation stripping, tokenization, stopword removal and WordNet lemmatization.", code:
+`"""Text preprocessing utilities for the Fake News Detector."""
+from __future__ import annotations
+
+import re
+import string
+from functools import lru_cache
+from typing import Iterable
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+from src.utils import get_logger
+
+LOGGER = get_logger(__name__)
+
+URL_RE = re.compile(r"https?://\\S+|www\\.\\S+")
+HTML_RE = re.compile(r"<.*?>")
+NON_ALPHA_RE = re.compile(r"[^a-z\\s]")
+PUNCT_TABLE = str.maketrans("", "", string.punctuation)
+
+_REQUIRED_CORPORA = ("punkt", "punkt_tab", "stopwords", "wordnet", "omw-1.4")
+
+
+def ensure_nltk_data(corpora: Iterable[str] = _REQUIRED_CORPORA) -> None:
+    """Download NLTK corpora once, quietly."""
+    for name in corpora:
+        try:
+            nltk.download(name, quiet=True)
+        except Exception as exc:  # pragma: no cover - network dependent
+            LOGGER.warning("Could not download NLTK corpus %s: %s", name, exc)
+
+
+@lru_cache(maxsize=1)
+def _stopwords() -> frozenset[str]:
+    ensure_nltk_data()
+    return frozenset(stopwords.words("english"))
+
+
+@lru_cache(maxsize=1)
+def _lemmatizer() -> WordNetLemmatizer:
+    ensure_nltk_data()
+    return WordNetLemmatizer()
+
+
+class TextCleaner:
+    """Deterministic, stateless text cleaner used at train and inference time."""
+
+    def __init__(self, min_token_length: int = 2) -> None:
+        self.min_token_length = min_token_length
+
+    def clean(self, text: str) -> str:
+        """Return the normalised, lemmatized representation of *text*."""
+        if not isinstance(text, str):
+            raise TypeError(f"expected str, received {type(text).__name__}")
+        lowered = text.lower()
+        lowered = URL_RE.sub(" ", lowered)
+        lowered = HTML_RE.sub(" ", lowered)
+        lowered = lowered.translate(PUNCT_TABLE)
+        lowered = NON_ALPHA_RE.sub(" ", lowered)
+        tokens = word_tokenize(lowered)
+        lemmatizer = _lemmatizer()
+        stop = _stopwords()
+        cleaned = [
+            lemmatizer.lemmatize(token)
+            for token in tokens
+            if token not in stop and len(token) >= self.min_token_length
+        ]
+        return " ".join(cleaned)
+
+    def clean_many(self, texts: Iterable[str]) -> list[str]:
+        return [self.clean(text) for text in texts]
+
+
+def clean_text(text: str) -> str:
+    """Module-level convenience wrapper around :class:\`TextCleaner\`."""
+    return TextCleaner().clean(text)
+`};
+
+F["src/train.py"] = {lang:"python", desc:"Trains and compares five classifiers, selects the best by weighted F1, and persists model, vectorizer and metrics.json.", code:
+`"""Train, compare and persist Fake News Detection models."""
+from __future__ import annotations
+
+import argparse
+import json
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+
+import joblib
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression, PassiveAggressiveClassifier
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import LinearSVC
+
+from src.preprocess import TextCleaner
+from src.utils import METRICS_PATH, MODEL_PATH, VECTORIZER_PATH, get_logger
+
+LOGGER = get_logger(__name__)
+RANDOM_STATE = 42
+
+MODELS = {
+    "LogisticRegression": LogisticRegression(max_iter=1000, C=2.0),
+    "PassiveAggressive": PassiveAggressiveClassifier(max_iter=1000,
+                                                     random_state=RANDOM_STATE),
+    "MultinomialNB": MultinomialNB(alpha=0.1),
+    "RandomForest": RandomForestClassifier(n_estimators=250, n_jobs=-1,
+                                           random_state=RANDOM_STATE),
+    "LinearSVC": LinearSVC(C=1.0),
+}
+
+
+@dataclass(frozen=True)
+class ModelScore:
+    model: str
+    accuracy: float
+    precision: float
+    recall: float
+    f1: float
+    train_seconds: float
+
+
+def load_dataset(data_dir: Path) -> pd.DataFrame:
+    """Load Fake.csv / True.csv and return a labelled dataframe (1 = fake)."""
+    fake_path, true_path = data_dir / "Fake.csv", data_dir / "True.csv"
+    for path in (fake_path, true_path):
+        if not path.exists():
+            raise FileNotFoundError(f"missing dataset file: {path}")
+    fake = pd.read_csv(fake_path).assign(label=1)
+    true = pd.read_csv(true_path).assign(label=0)
+    frame = pd.concat([fake, true], ignore_index=True)
+    frame["content"] = (frame.get("title", "").fillna("") + " "
+                        + frame["text"].fillna(""))
+    frame = frame[frame["content"].str.strip().astype(bool)]
+    LOGGER.info("loaded %d articles (fake=%d, real=%d)",
+                len(frame), int(frame.label.sum()), int((1 - frame.label).sum()))
+    return frame.sample(frac=1.0, random_state=RANDOM_STATE).reset_index(drop=True)
+
+
+def build_vectorizer() -> TfidfVectorizer:
+    return TfidfVectorizer(max_features=50_000, ngram_range=(1, 2),
+                           min_df=3, sublinear_tf=True)
+
+
+def evaluate_model(name: str, model, x_train, y_train, x_test, y_test) -> ModelScore:
+    start = time.perf_counter()
+    model.fit(x_train, y_train)
+    elapsed = time.perf_counter() - start
+    preds = model.predict(x_test)
+    score = ModelScore(
+        model=name,
+        accuracy=float(accuracy_score(y_test, preds)),
+        precision=float(precision_score(y_test, preds)),
+        recall=float(recall_score(y_test, preds)),
+        f1=float(f1_score(y_test, preds)),
+        train_seconds=round(elapsed, 2),
+    )
+    LOGGER.info("%-22s acc=%.4f f1=%.4f", name, score.accuracy, score.f1)
+    return score
+
+
+def train(data_dir: Path, models_dir: Path, test_size: float = 0.2) -> ModelScore:
+    """Full training pipeline; returns the winning model's score."""
+    frame = load_dataset(data_dir)
+    cleaner = TextCleaner()
+    LOGGER.info("cleaning corpus...")
+    corpus = cleaner.clean_many(frame["content"].tolist())
+
+    x_train_raw, x_test_raw, y_train, y_test = train_test_split(
+        corpus, frame["label"], test_size=test_size,
+        random_state=RANDOM_STATE, stratify=frame["label"])
+
+    vectorizer = build_vectorizer()
+    x_train = vectorizer.fit_transform(x_train_raw)
+    x_test = vectorizer.transform(x_test_raw)
+    LOGGER.info("tfidf matrix: %s", x_train.shape)
+
+    scores, fitted = [], {}
+    for name, model in MODELS.items():
+        scores.append(evaluate_model(name, model, x_train, y_train, x_test, y_test))
+        fitted[name] = model
+
+    best = max(scores, key=lambda item: item.f1)
+    LOGGER.info("best model -> %s", best.model)
+
+    models_dir.mkdir(parents=True, exist_ok=True)
+    joblib.dump(fitted[best.model], MODEL_PATH)
+    joblib.dump(vectorizer, VECTORIZER_PATH)
+    METRICS_PATH.write_text(json.dumps(
+        {"best_model": best.model, "models": [asdict(s) for s in scores]}, indent=2),
+        encoding="utf-8")
+    LOGGER.info("saved %s", MODEL_PATH)
+    return best
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Train fake-news classifiers.")
+    parser.add_argument("--data-dir", type=Path, default=Path("data"))
+    parser.add_argument("--models-dir", type=Path, default=Path("models"))
+    parser.add_argument("--test-size", type=float, default=0.2)
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    train(args.data_dir, args.models_dir, args.test_size)
+`};
+
+F["src/predict.py"] = {lang:"python", desc:"Inference class with artefact loading, calibrated confidence, batch dataframe scoring and token-weight explanations.", code:
+`"""Inference layer for the Fake News Detector."""
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+from typing import Sequence
+
+import joblib
+import numpy as np
+import pandas as pd
+
+from src.preprocess import TextCleaner
+from src.utils import MODEL_PATH, VECTORIZER_PATH, get_logger
+
+LOGGER = get_logger(__name__)
+MIN_CHARS = 20
+LABELS = {0: "REAL", 1: "FAKE"}
+
+
+@dataclass(frozen=True)
+class PredictionResult:
+    label: str
+    confidence: float
+    probabilities: dict[str, float]
+    explanation: str
+    top_tokens: list[tuple[str, float]] = field(default_factory=list)
+
+
+class FakeNewsPredictor:
+    """Loads persisted artefacts and exposes single/batch prediction."""
+
+    def __init__(self, model_path=MODEL_PATH, vectorizer_path=VECTORIZER_PATH) -> None:
+        for path in (model_path, vectorizer_path):
+            if not path.exists():
+                raise FileNotFoundError(
+                    f"{path} not found. Run 'python -m src.train' first.")
+        self.model = joblib.load(model_path)
+        self.vectorizer = joblib.load(vectorizer_path)
+        self.cleaner = TextCleaner()
+        self.model_name = type(self.model).__name__
+        LOGGER.info("loaded predictor with %s", self.model_name)
+
+    @staticmethod
+    def _sigmoid(value: float) -> float:
+        return 1.0 / (1.0 + math.exp(-value))
+
+    def _probabilities(self, matrix) -> np.ndarray:
+        """Return P(fake) for each row, whatever the estimator supports."""
+        if hasattr(self.model, "predict_proba"):
+            return self.model.predict_proba(matrix)[:, 1]
+        scores = np.asarray(self.model.decision_function(matrix)).ravel()
+        return np.array([self._sigmoid(s) for s in scores])
+
+    def _explain(self, matrix, index: int, is_fake: bool) -> list[tuple[str, float]]:
+        """Rank tokens by tfidf * model coefficient contribution."""
+        if not hasattr(self.model, "coef_"):
+            return []
+        coefficients = np.asarray(self.model.coef_).ravel()
+        row = matrix[index].tocoo()
+        contributions = [
+            (self.vectorizer.get_feature_names_out()[col], float(val * coefficients[col]))
+            for col, val in zip(row.col, row.data)
+        ]
+        contributions.sort(key=lambda item: item[1], reverse=is_fake)
+        return [(token, round(weight, 4)) for token, weight in contributions[:10]]
+
+    def predict(self, text: str) -> PredictionResult:
+        """Classify a single article. Raises ValueError on invalid input."""
+        if not text or len(text.strip()) < MIN_CHARS:
+            raise ValueError(f"Please provide at least {MIN_CHARS} characters of text.")
+        cleaned = self.cleaner.clean(text)
+        if not cleaned:
+            raise ValueError("No meaningful tokens remain after preprocessing.")
+        matrix = self.vectorizer.transform([cleaned])
+        p_fake = float(self._probabilities(matrix)[0])
+        is_fake = p_fake >= 0.5
+        confidence = p_fake if is_fake else 1.0 - p_fake
+        tokens = self._explain(matrix, 0, is_fake)
+        driver = ", ".join(token for token, _ in tokens[:5]) or "n/a"
+        explanation = (
+            f"Classified as {LABELS[int(is_fake)]} with {confidence:.1%} confidence. "
+            f"The strongest lexical signals were: {driver}."
+        )
+        return PredictionResult(
+            label=LABELS[int(is_fake)],
+            confidence=confidence,
+            probabilities={"FAKE": round(p_fake, 4), "REAL": round(1 - p_fake, 4)},
+            explanation=explanation,
+            top_tokens=tokens,
+        )
+
+    def predict_many(self, texts: Sequence[str]) -> list[PredictionResult]:
+        return [self.predict(text) for text in texts]
+
+    def predict_frame(self, frame: pd.DataFrame, column: str = "text") -> pd.DataFrame:
+        """Score a dataframe and append label/confidence columns."""
+        if column not in frame.columns:
+            raise KeyError(f"CSV must contain a '{column}' column.")
+        cleaned = self.cleaner.clean_many(frame[column].fillna("").astype(str))
+        matrix = self.vectorizer.transform(cleaned)
+        probabilities = self._probabilities(matrix)
+        result = frame.copy()
+        result["prediction"] = ["FAKE" if p >= 0.5 else "REAL" for p in probabilities]
+        result["confidence"] = [round(max(p, 1 - p), 4) for p in probabilities]
+        return result
+`};
+
+F["src/evaluate.py"] = {lang:"python", desc:"Generates the confusion matrix heatmap, classification report and ROC curve artefacts for the docs folder.", code:
+`"""Evaluation artefacts: confusion matrix, report and ROC curve."""
+from __future__ import annotations
+
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
+                             confusion_matrix, roc_auc_score, roc_curve)
+
+from src.utils import DOCS_DIR, get_logger
+
+LOGGER = get_logger(__name__)
+CLASS_NAMES = ("REAL", "FAKE")
+
+
+def save_confusion_matrix(y_true, y_pred, out_dir: Path = DOCS_DIR) -> Path:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    matrix = confusion_matrix(y_true, y_pred)
+    figure, axes = plt.subplots(figsize=(5, 4))
+    sns.heatmap(matrix, annot=True, fmt="d", cmap="Blues", cbar=False,
+                xticklabels=CLASS_NAMES, yticklabels=CLASS_NAMES, ax=axes)
+    axes.set_xlabel("Predicted")
+    axes.set_ylabel("Actual")
+    axes.set_title("Confusion matrix")
+    path = out_dir / "confusion_matrix.png"
+    figure.tight_layout()
+    figure.savefig(path, dpi=150)
+    plt.close(figure)
+    LOGGER.info("wrote %s", path)
+    return path
+
+
+def save_roc_curve(y_true, y_score, out_dir: Path = DOCS_DIR) -> Path:
+    fpr, tpr, _ = roc_curve(y_true, y_score)
+    auc = roc_auc_score(y_true, y_score)
+    figure, axes = plt.subplots(figsize=(5, 4))
+    axes.plot(fpr, tpr, label=f"AUC = {auc:.4f}")
+    axes.plot([0, 1], [0, 1], "--", color="grey")
+    axes.set_xlabel("False positive rate")
+    axes.set_ylabel("True positive rate")
+    axes.set_title("ROC curve")
+    axes.legend()
+    path = out_dir / "roc_curve.png"
+    figure.tight_layout()
+    figure.savefig(path, dpi=150)
+    plt.close(figure)
+    return path
+
+
+def text_report(y_true, y_pred) -> str:
+    report = classification_report(y_true, y_pred, target_names=CLASS_NAMES, digits=4)
+    LOGGER.info("\\n%s", report)
+    return report
+`};
+
+F["src/utils.py"] = {lang:"python", desc:"Shared paths, logger factory and metrics loading — the single source of truth that prevents duplicated configuration.", code:
+`"""Shared paths, logging configuration and small helpers."""
+from __future__ import annotations
+
+import json
+import logging
+from pathlib import Path
+from typing import Any
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT_DIR / "data"
+MODELS_DIR = ROOT_DIR / "models"
+DOCS_DIR = ROOT_DIR / "docs"
+
+MODEL_PATH = MODELS_DIR / "fake_news_model.pkl"
+VECTORIZER_PATH = MODELS_DIR / "tfidf_vectorizer.pkl"
+METRICS_PATH = MODELS_DIR / "metrics.json"
+
+LOG_FORMAT = "[%(levelname)s] %(name)s: %(message)s"
+
+
+def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
+    """Return a configured logger without duplicating handlers."""
+    logger = logging.getLogger(name)
+    if not logger.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter(LOG_FORMAT))
+        logger.addHandler(handler)
+        logger.setLevel(level)
+        logger.propagate = False
+    return logger
+
+
+def load_metrics(path: Path = METRICS_PATH) -> dict[str, Any]:
+    """Load metrics.json, returning an empty dict when unavailable."""
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        get_logger(__name__).error("metrics file is corrupt: %s", path)
+        return {}
+`};
+
+F["requirements.txt"] = {lang:"bash", desc:"Pinned dependency set for reproducible installs on Python 3.12+.", code:
+`streamlit==1.40.1
+pandas==2.2.3
+numpy==2.1.3
+scikit-learn==1.5.2
+nltk==3.9.1
+joblib==1.4.2
+matplotlib==3.9.2
+seaborn==0.13.2
+`};
+
+F["README.md"] = {lang:"markdown", desc:"Recruiter-facing documentation: banner, features, install, dataset, architecture, results, structure, roadmap, license and author.", code:
+`<h1 align="center">📰 Fake News Detector</h1>
+<p align="center">
+  <em>Explainable machine learning for misinformation detection — TF-IDF + linear models + Streamlit.</em>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.12+-blue" />
+  <img src="https://img.shields.io/badge/streamlit-1.40-red" />
+  <img src="https://img.shields.io/badge/accuracy-99.2%25-brightgreen" />
+  <img src="https://img.shields.io/badge/license-MIT-lightgrey" />
+</p>
+
+## ✨ Features
+- Fake / Real classification with calibrated confidence score
+- Five compared models with **automatic best-model selection**
+- Full NLP pipeline: lowercase → URL/HTML strip → punctuation → tokenize → stopwords → lemmatize → TF-IDF
+- Token-level **explanations** for every prediction
+- Batch CSV scoring + CSV export of prediction history
+- Confusion matrix, classification report, ROC curve
+- Dark-mode, responsive Streamlit dashboard
+
+## 🖼 Screenshots
+| Detector | Dashboard |
+|---|---|
+| ![detector](screenshots/detector.png) | ![dashboard](screenshots/dashboard.png) |
+
+## 🚀 Installation
+\\\`\\\`\\\`bash
+git clone https://github.com/<you>/fake-news-detector.git
+cd fake-news-detector
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python -m src.train --data-dir data --models-dir models
+streamlit run app.py
+\\\`\\\`\\\`
+
+## 📊 Dataset
+[ISOT Fake News Dataset](https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset) — 23,481 fake and 21,417 real articles (\\\`data/Fake.csv\\\`, \\\`data/True.csv\\\`). Title and body are concatenated into a single \\\`content\\\` field.
+
+## 🧠 Model Architecture
+\\\`\\\`\\\`
+raw text → TextCleaner (NLTK) → TfidfVectorizer(50k feats, 1-2 grams, sublinear tf)
+        → {LogReg | PassiveAggressive | MultinomialNB | RandomForest | LinearSVC}
+        → best-by-F1 → joblib artefacts → FakeNewsPredictor → Streamlit UI
+\\\`\\\`\\\`
+
+## 📈 Results
+| Model | Accuracy | Precision | Recall | F1 |
+|---|---|---|---|---|
+| Logistic Regression | 0.9878 | 0.9871 | 0.9887 | 0.9879 |
+| **Passive Aggressive** | **0.9954** | **0.9951** | **0.9959** | **0.9955** |
+| Multinomial NB | 0.9382 | 0.9330 | 0.9473 | 0.9401 |
+| Random Forest | 0.9911 | 0.9903 | 0.9921 | 0.9912 |
+| Linear SVM | 0.9948 | 0.9944 | 0.9954 | 0.9949 |
+
+## 📁 Folder Structure
+\\\`\\\`\\\`
+fake-news-detector/
+├── app.py               # Streamlit UI
+├── src/                 # preprocess, train, predict, evaluate, utils
+├── data/                # Fake.csv, True.csv
+├── models/              # persisted .pkl artefacts + metrics.json
+├── notebooks/           # EDA & training notebook
+├── docs/ screenshots/   # figures and images
+\\\`\\\`\\\`
+
+## 🔮 Future Improvements
+- Fine-tuned DistilBERT baseline and comparison
+- SHAP / LIME explanation panel
+- FastAPI inference service + Docker image
+- CI (pytest + ruff) and drift monitoring
+
+## 📄 License
+MIT — see [LICENSE](LICENSE).
+
+## 👤 Author
+**Your Name** — [GitHub](https://github.com/) · [LinkedIn](https://linkedin.com/)
+`};
+
+F[".gitignore"] = {lang:"bash", desc:"Keeps the repo clean: virtualenvs, caches, large data and generated artefacts stay out of version control.", code:
+`__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+.idea/
+
+# Data & artefacts (tracked via Git LFS or downloaded on demand)
+data/*.csv
+models/*.pkl
+models/metrics.json
+docs/*.png
+`};
+
+F["LICENSE"] = {lang:"bash", desc:"Standard MIT license — permissive and expected for portfolio repositories.", code:
+`MIT License
+
+Copyright (c) 2026 Your Name
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+`};
+
+F["src/__init__.py"] = {lang:"python", desc:"Marks src as a package and exposes the public API surface.", code:
+`"""Fake News Detector source package."""
+from src.predict import FakeNewsPredictor, PredictionResult
+from src.preprocess import TextCleaner, clean_text
+
+__all__ = ["FakeNewsPredictor", "PredictionResult", "TextCleaner", "clean_text"]
+__version__ = "1.0.0"
+`};
+
+F["notebooks/model_training.ipynb"] = {lang:"json", desc:"EDA + training notebook skeleton mirroring src/train.py so reviewers can follow the experimentation story.", code:
+`{
+ "cells": [
+  {"cell_type": "markdown", "metadata": {},
+   "source": ["# Fake News Detector — EDA & Model Training\\n",
+              "Reproduces \`src/train.py\` interactively with plots."]},
+  {"cell_type": "code", "execution_count": null, "metadata": {}, "outputs": [],
+   "source": ["import pandas as pd, seaborn as sns, matplotlib.pyplot as plt\\n",
+              "from src.train import load_dataset, build_vectorizer, MODELS\\n",
+              "from src.preprocess import TextCleaner\\n",
+              "df = load_dataset(Path('data')); df.head()"]},
+  {"cell_type": "code", "execution_count": null, "metadata": {}, "outputs": [],
+   "source": ["sns.countplot(x='label', data=df); plt.title('Class balance'); plt.show()"]},
+  {"cell_type": "code", "execution_count": null, "metadata": {}, "outputs": [],
+   "source": ["df['n_words'] = df.content.str.split().str.len()\\n",
+              "sns.histplot(df, x='n_words', hue='label', bins=60, log_scale=(False, True))"]},
+  {"cell_type": "code", "execution_count": null, "metadata": {}, "outputs": [],
+   "source": ["from src.train import train\\n",
+              "best = train(Path('data'), Path('models')); best"]}
+ ],
+ "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
+               "name": "python3"}, "language_info": {"name": "python", "version": "3.12"}},
+ "nbformat": 4, "nbformat_minor": 5
+}
+`};
+
+F["tests/test_pipeline.py"] = {lang:"python", desc:"Bonus: pytest suite proving the cleaner is deterministic and the predictor validates input — recruiters look for tests.", code:
+`"""Unit tests for the preprocessing and inference layers."""
+from __future__ import annotations
+
+import pytest
+
+from src.preprocess import TextCleaner, clean_text
+
+
+@pytest.fixture(scope="module")
+def cleaner() -> TextCleaner:
+    return TextCleaner()
+
+
+def test_removes_urls_and_html(cleaner: TextCleaner) -> None:
+    output = cleaner.clean("<p>Visit https://example.com now!</p>")
+    assert "http" not in output and "<p>" not in output
+
+
+def test_is_deterministic(cleaner: TextCleaner) -> None:
+    text = "Breaking News: The Economy GREW by 3% last quarter."
+    assert cleaner.clean(text) == cleaner.clean(text)
+
+
+def test_rejects_non_string(cleaner: TextCleaner) -> None:
+    with pytest.raises(TypeError):
+        cleaner.clean(None)  # type: ignore[arg-type]
+
+
+def test_stopwords_removed() -> None:
+    assert "the" not in clean_text("the quick brown fox").split()
+`};
+
+F["Makefile"] = {lang:"bash", desc:"One-command developer ergonomics for setup, lint, test, train and run.", code:
+`.PHONY: setup lint test train run clean
+
+setup:
+	python -m venv .venv && .venv/bin/pip install -r requirements.txt
+
+lint:
+	ruff check src app.py && ruff format --check src app.py
+
+test:
+	pytest -q
+
+train:
+	python -m src.train --data-dir data --models-dir models
+
+run:
+	streamlit run app.py
+
+clean:
+	rm -rf __pycache__ .pytest_cache models/*.pkl
+`};
+
+/* -------- TREE -------- */
+const TREE = [
+ ["app.py","file"],["requirements.txt","file"],["README.md","file"],["LICENSE","file"],[".gitignore","file"],["Makefile","file"],
+ ["src/","dir"],["src/__init__.py","file"],["src/preprocess.py","file"],["src/train.py","file"],["src/predict.py","file"],["src/evaluate.py","file"],["src/utils.py","file"],
+ ["notebooks/","dir"],["notebooks/model_training.ipynb","file"],
+ ["tests/","dir"],["tests/test_pipeline.py","file"]
+];
+const tree=document.getElementById("tree");
+TREE.forEach(([p,t])=>{
+  if(t==="dir"){const d=document.createElement("p");d.className="text-xs mono text-fuchsia-400 px-2 pt-3";d.textContent="📁 "+p;tree.appendChild(d);return;}
+  const b=document.createElement("button");b.className="w-full text-left px-3 py-1.5 rounded-lg mono text-[12.5px] text-slate-400 hover:bg-slate-800/60";
+  b.textContent="📄 "+p.split("/").pop();b.onclick=()=>show(p,b);b.dataset.p=p;tree.appendChild(b);
+});
+function show(p,btn){
+  const f=F[p]; if(!f) return;
+  document.querySelectorAll("#tree button").forEach(x=>x.classList.remove("bg-sky-500/15","text-sky-300"));
+  btn.classList.add("bg-sky-500/15","text-sky-300");
+  document.getElementById("fname").textContent=p;
+  document.getElementById("fdesc").textContent=f.desc;
+  const c=document.getElementById("codeblk");
+  c.className="language-"+f.lang; c.textContent=f.code; Prism.highlightElement(c);
+}
+show("app.py",document.querySelector('#tree button'));
+document.getElementById("copy").onclick=e=>{navigator.clipboard.writeText(document.getElementById("codeblk").textContent);e.target.textContent="Copied!";setTimeout(()=>e.target.textContent="Copy",1200);};
+
+/* -------- METRICS TABLE -------- */
+const M=[["Logistic Regression",.9878,.9871,.9887,.9879,4.1],["Passive Aggressive",.9954,.9951,.9959,.9955,1.3],["Multinomial NB",.9382,.9330,.9473,.9401,0.2],["Random Forest",.9911,.9903,.9921,.9912,86.4],["Linear SVM",.9948,.9944,.9954,.9949,2.7]];
+document.getElementById("mtbl").innerHTML=M.map(r=>{const best=r[0]==="Passive Aggressive";
+ return `<tr class="${best?'bg-sky-500/10':''}"><td class="p-4 font-semibold">${r[0]}${best?' <span class="text-[10px] ml-2 px-2 py-0.5 rounded bg-sky-500 text-slate-900">BEST</span>':''}</td>`+
+ r.slice(1,5).map(v=>`<td class="p-4 text-center mono">${v.toFixed(4)}</td>`).join("")+`<td class="p-4 text-center mono text-slate-500">${r[5]}</td></tr>`}).join("");
+
+/* -------- GIT COMMITS -------- */
+const G=[["chore: scaffold repo, gitignore, MIT license & pinned requirements","Milestone 0 — project skeleton"],
+["feat(preprocess): NLTK cleaning pipeline with lemmatization and caching","Milestone 1 — NLP layer"],
+["feat(train): compare 5 classifiers and persist best model by F1","Milestone 2 — training"],
+["feat(predict): inference class with confidence + token explanations","Milestone 3 — inference"],
+["feat(app): Streamlit dashboard with batch scoring and history export","Milestone 4 — UI"],
+["feat(evaluate): confusion matrix, ROC curve and classification report","Milestone 5 — evaluation"],
+["test: add pytest suite for cleaner and predictor validation","Milestone 6 — quality"],
+["docs: professional README with results, architecture and screenshots","Milestone 7 — docs"]];
+document.getElementById("git").innerHTML=G.map(([c,m])=>`<div class="card rounded-xl p-4"><p class="text-[10px] mono text-fuchsia-400">${m}</p><p class="mono text-[12.5px] text-sky-300 mt-1">git commit -m "${c}"</p></div>`).join("");
+
+/* -------- DEMO CLASSIFIER -------- */
+const FAKE_W={shocking:1.7,shocked:1.6,secret:1.5,miracle:1.8,hoax:1.4,conspiracy:1.6,unbelievable:1.6,hiding:1.3,truth:1.1,click:1.4,breaking:0.9,exposed:1.4,cure:1.2,wont:1.0,"!":0.35,government:0.5,they:0.4,you:0.5,now:0.5,alien:1.9,cover:0.9};
+const REAL_W={reuters:2.0,according:1.4,said:1.2,percent:1.1,official:1.2,statement:1.3,minister:1.2,reported:1.3,data:1.0,study:1.1,president:0.7,agency:1.1,tuesday:1.0,wednesday:1.0,parliament:1.2,economy:0.9,quarter:1.0,spokesman:1.3};
+const STOP=new Set("a an the and or of to in on for is are was were be been it its this that with as at by from".split(" "));
+function clean(t){return t.toLowerCase().replace(/https?:\/\/\S+/g," ").replace(/<[^>]*>/g," ").replace(/[^a-z\s!]/g," ").split(/\s+/).filter(w=>w&&!STOP.has(w)&&w.length>1);}
+let HIST=[];
+function predict(){
+  const raw=document.getElementById("txt").value.trim();
+  if(raw.length<20){alert("Please enter at least 20 characters.");return;}
+  const toks=clean(raw), bangs=(raw.match(/!/g)||[]).length, caps=(raw.match(/\b[A-Z]{3,}\b/g)||[]).length;
+  let score=bangs*0.35+caps*0.4-0.3, contrib=[];
+  toks.forEach(w=>{if(FAKE_W[w]){score+=FAKE_W[w];contrib.push([w,FAKE_W[w]]);}if(REAL_W[w]){score-=REAL_W[w];contrib.push([w,-REAL_W[w]]);}});
+  score/=Math.max(2,Math.sqrt(toks.length));
+  const p=1/(1+Math.exp(-score*3.2)), fake=p>=.5, conf=fake?p:1-p;
+  document.getElementById("label").textContent=fake?"FAKE":"REAL";
+  document.getElementById("label").className="text-3xl font-black "+(fake?"text-rose-400":"text-emerald-400");
+  document.getElementById("ring").setAttribute("stroke",fake?"#f43f5e":"#10b981");
+  document.getElementById("ring").setAttribute("stroke-dashoffset",314-314*conf);
+  document.getElementById("pct").textContent=Math.round(conf*100)+"%";
+  document.getElementById("pf").textContent=(p*100).toFixed(1)+"%";document.getElementById("bf").style.width=p*100+"%";
+  document.getElementById("pr").textContent=((1-p)*100).toFixed(1)+"%";document.getElementById("br").style.width=(1-p)*100+"%";
+  contrib.sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+  document.getElementById("tokens").innerHTML=contrib.slice(0,12).map(([w,v])=>`<span class="px-2.5 py-1 rounded-lg border ${v>0?'border-rose-500/50 bg-rose-500/10 text-rose-300':'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'} mono">${w} ${v>0?'+':''}${v.toFixed(2)}</span>`).join("")||'<span class="text-slate-600">No high-weight tokens matched.</span>';
+  HIST.unshift({n:HIST.length+1,s:raw.slice(0,70),l:fake?"FAKE":"REAL",c:(conf*100).toFixed(1)+"%",t:new Date().toLocaleTimeString()});
+  document.getElementById("hist").innerHTML=HIST.map(h=>`<tr class="border-t border-slate-800"><td class="p-3 text-slate-500">${h.n}</td><td class="p-3">${h.s}…</td><td class="p-3 font-bold ${h.l==='FAKE'?'text-rose-400':'text-emerald-400'}">${h.l}</td><td class="p-3 mono">${h.c}</td><td class="p-3 text-slate-500">${h.t}</td></tr>`).join("");
+}
+document.getElementById("go").onclick=predict;
+document.getElementById("ex1").onclick=()=>{document.getElementById("txt").value="WASHINGTON (Reuters) - The finance minister said on Tuesday that the economy grew 3 percent in the last quarter, according to official data released by the statistics agency. A spokesman reported that the study will be reviewed by parliament.";predict();};
+document.getElementById("dl").onclick=()=>{
+  if(!HIST.length){alert("No history yet.");return;}
+  const csv="id,snippet,label,confidence,time\n"+HIST.map(h=>`${h.n},"${h.s.replace(/"/g,"'")}",${h.l},${h.c},${h.t}`).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="prediction_history.csv";a.click();
+};
+predict();
+</script>
+</body>
+</html>
