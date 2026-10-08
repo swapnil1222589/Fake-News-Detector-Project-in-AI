@@ -8,7 +8,7 @@ The project combines an NLP preprocessing pipeline, TF-IDF feature extraction, m
 
 🌐 **Repository:**
 https://github.com/swapnil1222589/Fake-News-Detector-Project-in-AI
-
+ 
 ---
 
 ## 🚀 Project Overview
