@@ -48,7 +48,7 @@ The repository is designed as a **portfolio-grade ML project**, emphasizing repr
 ### 📰 Fake / Real Classification
 
 Classify an input news article into:
-
+ 
 * `FAKE`
 * `REAL`
 
