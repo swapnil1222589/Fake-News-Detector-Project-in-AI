@@ -13,7 +13,7 @@ https://github.com/swapnil1222589/Fake-News-Detector-Project-in-AI
 
 ## 🚀 Project Overview
 
-Misinformation can spread rapidly through online platforms, making automated text classification useful as a research and educational tool.
+Misinformation can spread rapidly through online platforms, making automated text classification useful as a research and educational tools.
 
 This project explores a complete ML workflow:
 
