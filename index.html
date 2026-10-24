@@ -957,7 +957,7 @@ const tree=document.getElementById("tree");
 TREE.forEach(([p,t])=>{
   if(t==="dir"){const d=document.createElement("p");d.className="text-xs mono text-fuchsia-400 px-2 pt-3";d.textContent="📁 "+p;tree.appendChild(d);return;}
   const b=document.createElement("button");b.className="w-full text-left px-3 py-1.5 rounded-lg mono text-[12.5px] text-slate-400 hover:bg-slate-800/60";
-  b.textContent="📄 "+p.split("/").pop();b.onclick=()=>show(p,b);b.dataset.p=p;tree.appendChild(b);
+  b.textContent="📄 "+p.split("/").pop();b.onclick=()=>show(p,b);b.dataset.p=p;tree.appendChild(b); 
 });
 function show(p,btn){
   const f=F[p]; if(!f) return;
