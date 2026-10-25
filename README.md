@@ -2,7 +2,7 @@
 
 > **Explainable machine learning for detecting potentially fake or real news using NLP and classical machine learning.**
 
-The **Fake News Detector** is an end-to-end machine learning project that demonstrates how natural language processing and supervised learning can be used to classify news articles as **FAKE** or **REAL**.
+The **Fake News Detector** is an end-to-end machine learning project that  demonstrates how natural language processing and supervised learning can be used to classify news articles as **FAKE** or **REAL**.
 
 The project combines an NLP preprocessing pipeline, TF-IDF feature extraction, multiple machine-learning classifiers, model comparison, prediction explanations, batch scoring, and a Streamlit dashboard.
 
