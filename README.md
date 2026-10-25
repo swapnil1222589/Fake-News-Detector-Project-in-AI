@@ -1,4 +1,4 @@
-# 📰 Fake News Detector
+# 📰 Fake News Detector 
 
 > **Explainable machine learning for detecting potentially fake or real news using NLP and classical machine learning.**
 
