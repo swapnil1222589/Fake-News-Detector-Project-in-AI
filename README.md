@@ -74,7 +74,7 @@ The showcased training configuration uses:
 
 ```text
 50,000 features
-1–2 word n-grams
+1–2 word n-grams 
 Sublinear TF scaling
 ```
 
