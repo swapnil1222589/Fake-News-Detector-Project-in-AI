@@ -116,7 +116,7 @@ The project supports generating:
 * Classification report
 * ROC curve
 
-### 🧾 Prediction History
+### 🧾 Prediction History. 
 
 Predictions made during a session can be reviewed and exported as CSV.
 
