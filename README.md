@@ -20,7 +20,7 @@ This project explores a complete ML workflow:
 ```text
 News Article
      ↓
-Text Cleaning
+Text Cleaning 
      ↓
 NLTK NLP Pipeline
      ↓
